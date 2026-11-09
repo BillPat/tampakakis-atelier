@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#151918">
+  <meta name="description" content="Explore Tampakakis Atelier: nine works on light, form and the spaces between. An immersive digital exhibition.">
+  <title>Tampakakis Atelier — A Gallery in Motion</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap');
+    :root { color-scheme: dark; --ink:#f8f5ef; --muted:#b7b3aa; --sand:#d7bb89; --dark:#101311; --walk:0; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:auto; }
+    body { margin:0; background:#101311; color:var(--ink); font-family:'Manrope','Helvetica Neue',sans-serif; overflow-x:hidden; }
+    button {font:inherit}
+    .scroll-runway { height:750vh; position:relative; }
+    .viewport { position:sticky; top:0; width:100%; height:100svh; min-height:560px; overflow:hidden; background:#0e1110; perspective:930px; perspective-origin:50% 50%; isolation:isolate; }
+    .world { position:absolute; left:50%; top:50%; width:0; height:0; transform-style:preserve-3d; will-change:transform; }
+    .world > * { position:absolute; transform-style:preserve-3d; }
+    .surface { backface-visibility:visible; }
+    .wall { width:5600px; height:920px; left:-2800px; top:-460px; background-color:#d8d3c7;
+      background-image:linear-gradient(0deg, rgba(89,71,47,.17) 0%, transparent 19%, transparent 81%, rgba(255,255,255,.55) 100%),
+      repeating-linear-gradient(90deg, transparent 0, transparent 545px,rgba(107,94,77,.09) 547px, transparent 550px),
+      linear-gradient(120deg,#b2afa7,#eeebe3 40%,#cbc7bd 85%);
+      box-shadow:inset 0 0 110px rgba(31,29,22,.17);
+    }
+    .wall.left { transform:translate3d(-610px,0,-2800px) rotateY(90deg); }
+    .wall.right { transform:translate3d(610px,0,-2800px) rotateY(-90deg); }
+    .floor { width:1220px; height:5600px; left:-610px; top:-2800px; transform:translate3d(0,460px,-2800px) rotateX(90deg);
+      background-color:#85827a;
+      background-image:repeating-linear-gradient(90deg,transparent 0,transparent 148px,rgba(30,26,20,.24) 150px,transparent 153px),
+      repeating-linear-gradient(0deg,transparent 0,transparent 245px,rgba(30,26,20,.27) 247px,transparent 250px),
+      linear-gradient(100deg, #69675f 0%,#aaa79d 49%,#77756c 100%);
+      box-shadow:inset 0 0 145px rgba(0,0,0,.5); }
+    .floor-rug {width:280px;height:5250px;left:-140px;top:-2625px;transform:translate3d(0,458px,-2830px) rotateX(90deg);
+      background:linear-gradient(90deg,rgba(24,28,27,.35),rgba(39,37,34,.1) 3%,#c5ac82 4%,#d0ba92 5%,#c0aa82 95%,rgba(25,23,21,.4) 97%),repeating-linear-gradient(0deg,transparent 0 80px,rgba(0,0,0,.04) 83px);
+      opacity:.6; }
+    .ceiling { width:1220px; height:5600px; left:-610px;top:-2800px; transform:translate3d(0,-460px,-2800px) rotateX(-90deg);
+      background:repeating-linear-gradient(0deg,rgba(87,80,68,.22) 0 5px,transparent 6px 580px),linear-gradient(90deg,#c5c3bc 0%,#efeee9 50%,#cbc9c1 100%); }
+    .endwall { width:1220px;height:920px;left:-610px;top:-460px;transform:translateZ(-5585px);background:
+      radial-gradient(ellipse at 50% 35%,rgba(109,102,84,.32),transparent 65%),
+      linear-gradient(135deg,#292c2a,#171e1c 60%,#2b2a27); box-shadow: inset 0 0 160px rgba(0,0,0,.65); }
+    .baseboard { width:5600px;height:34px;left:-2800px;top:-17px;background:linear-gradient(#eee9dd,#8f887b 20%,#81796f); }
+    .baseboard.left { transform:translate3d(-606px,444px,-2800px) rotateY(90deg); }
+    .baseboard.right { transform:translate3d(606px,444px,-2800px) rotateY(-90deg); }
+    .trim {width:5600px;height:18px;left:-2800px;top:-9px;background:#f5f2e9;box-shadow:0 5px 10px #7775;}
+    .trim.left {transform:translate3d(-605px,-447px,-2800px) rotateY(90deg)}
+    .trim.right {transform:translate3d(605px,-447px,-2800px) rotateY(-90deg)}
+    .light-track {position:absolute;width:10px;height:5400px;left:-5px;top:-2700px;transform:translate3d(0,-445px,-2800px) rotateX(90deg);background:#e2d1b2;box-shadow:0 0 25px 5px #fff3d8a6,0 0 85px 26px #ffefc566;}
+    .light-track.side-a {left:-455px;opacity:.8}.light-track.side-b {left:455px;opacity:.8}
+    .artwork { position:absolute; width:410px;height:302px;left:-205px;top:-151px;cursor:pointer;transform-style:preserve-3d;transition:filter .25s; }
+    .artwork:hover {filter:brightness(1.15)}
+    .artwork .frame {position:absolute;inset:0;padding:13px;background:linear-gradient(140deg,#241f1a,#b99f71 13%,#5b4a34 21%,#231e1b 34%,#c8ab75 54%,#241f1b 78%,#9e8560);box-shadow:3px 12px 28px rgba(22,17,14,.55),inset 0 0 0 2px #14110d;}
+    .artwork .mat {width:100%;height:100%;background:#f0ede5;padding:13px;box-shadow:inset 0 0 0 2px #bcb4a6;}
+    .artwork img {display:block;width:100%;height:100%;object-fit:cover;box-shadow:0 0 0 2px #403832;user-select:none;pointer-events:none;}
+    .artwork .plaque {position:absolute;left:0;top:calc(100% + 22px);padding:6px 0;white-space:nowrap;color:#262722;font:600 17px 'Manrope',sans-serif;letter-spacing:.025em;text-shadow:0 1px 0 #fff5;}
+    .artwork .plaque span {font-size:13px;opacity:.7;margin-left:8px;font-weight:400;}
+    .artwork.feature {width:780px;height:680px;left:-390px;top:-356px;}
+    .artwork.feature .frame {padding:22px;background:linear-gradient(125deg,#d6b979,#352e22 8%,#d4b67d 16%,#57462b 23%,#221e18 50%,#e1c68e 81%,#392e23);box-shadow:0 20px 70px #0009,0 0 95px rgba(224,179,97,.16);}
+    .artwork.feature .mat {padding:20px;background:#171918;box-shadow:inset 0 0 0 2px #ba9c63;}
+    .artwork.feature .plaque {color:#e0d5bc;top:calc(100% + 25px);width:100%;text-align:center;font-size:17px;}
+    .artwork.feature .plaque span {color:#b4a68b;}
+    .end-label {width:500px;height:22px;left:-250px;top:-11px;transform:translate3d(0,407px,-5557px);color:#baa98a;text-align:center;letter-spacing:.37em;font-size:13px;font-weight:600;}
+    .end-halo { width:850px;height:850px;left:-425px;top:-425px; transform:translate3d(0,0,-5560px);border-radius:100%;background:radial-gradient(circle,#bf9b5740 0%,#9f81551f 33%,transparent 69%);filter:blur(35px);pointer-events:none; }
+    .scene-dim {pointer-events:none;position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse 84% 77% at 50% 48%,transparent 40%,rgba(10,12,12,.38) 100%),linear-gradient(180deg,rgba(0,0,0,.36),transparent 29%,transparent 72%,rgba(0,0,0,.2));}
+    .ui {pointer-events:none;position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;padding:35px 49px 33px;}
+    .nav {display:flex;justify-content:space-between;align-items:center;gap:20px;pointer-events:auto;}
+    .brand {font-family:Georgia,'Times New Roman',serif;font-size:30px;line-height:1;letter-spacing:.2em;font-weight:400;color:#f5eddd;text-shadow:0 2px 13px #0004;}
+    .brand em{font-family:'Manrope',sans-serif;display:block;font-size:9px;font-style:normal;letter-spacing:.33em;font-weight:600;margin-top:10px;opacity:.82;}
+    .nav-right {display:flex;gap:28px;align-items:center;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;}
+    .nav-right button {padding:12px 18px;background:rgba(19,23,22,.55);backdrop-filter:blur(10px);color:#f8f5ed;cursor:pointer;border:1px solid #f7eadb65;letter-spacing:.14em;border-radius:100px;transition:background .2s;}
+    .nav-right button:hover {background:#a78b5c;}
+    .overline {margin-top:auto;margin-bottom:20px;display:flex;align-items:center;gap:13px;font-size:10px;letter-spacing:.25em;font-weight:700;color:#e5d3b7;text-transform:uppercase;text-shadow:0 2px 10px #0008;}
+    .overline:before{content:"";display:block;width:28px;height:1px;background:#e4cfab;}
+    .title-area {max-width:600px;transform:translateY(0);transition:opacity .5s,transform .5s;}
+    .title-area h1 {font:normal clamp(50px,7.2vw,105px)/.96 Georgia,'Times New Roman',serif;letter-spacing:-.048em;margin:0;text-shadow:0 4px 20px #0005;}
+    .title-area h1 em {font-weight:400;color:#d6ba86;font-style:italic;}
+    .title-area p {max-width:370px;font-size:13px;line-height:1.9;margin:21px 0 0;color:#f7f2e8e3;text-shadow:0 2px 8px #0009;}
+    .ui-bottom {margin-top:46px;display:flex;align-items:flex-end;gap:25px;justify-content:space-between;}
+    .scroll-hint {display:flex;align-items:center;gap:15px;font-size:10px;letter-spacing:.22em;font-weight:700;text-transform:uppercase;}
+    .scroll-mouse {width:25px;height:41px;border:1px solid #e4d0adab;border-radius:15px;display:flex;justify-content:center;padding-top:8px;}
+    .scroll-mouse:after {content:"";display:block;height:8px;width:2px;border-radius:3px;background:#e9d6b7;animation:wheel 1.5s infinite;}
+    @keyframes wheel {0%{transform:translateY(0);opacity:1}75%{transform:translateY(12px);opacity:.2}100%{opacity:0}}
+    .progress-box{display:flex;align-items:center;gap:16px;min-width:min(26vw,320px);}
+    .progress-box strong {font-size:11px;letter-spacing:.1em;font-weight:700;white-space:nowrap;}
+    .progress-line {height:1px;background:#ffffff65;flex:1;position:relative;}
+    .progress-line:before {content:"";position:absolute;top:-1px;left:0;height:3px;width:calc(var(--progress) * 100%);background:#e8c893;transition:width .1s linear;}
+    .chapter {display:flex;flex-direction:column;align-items:flex-end;gap:5px;min-width:92px;font-size:10px;letter-spacing:.12em;}
+    .chapter span:first-child{color:#e4d2b1}.chapter span:last-child{color:#faf3e1a3;font-size:9px;}
+    .work-hint {position:absolute;right:49px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:13px;color:#f6f0e7bf;font-size:10px;letter-spacing:.14em;text-transform:uppercase;transition:opacity .3s;}
+    .work-hint:before {content:"";width:24px;height:1px;background:#f4eadc91;}
+    .intro-badge {position:absolute;left:50%;top:34px;transform:translateX(-50%);font-size:10px;letter-spacing:.29em;color:#f4e9d5b9;text-transform:uppercase;white-space:nowrap;}
+    .veil {position:absolute;inset:0;pointer-events:none;z-index:3;opacity:var(--fade,0);background:#0c0e0c;}
+    .info-panel {position:fixed;inset:0;z-index:20;background:rgba(9,11,10,.77);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:28px;}
+    .info-panel.open{display:flex;}
+    .info-card {width:min(760px,95vw);display:grid;grid-template-columns:1fr 1fr;background:#eae6dc;color:#1c211e;border:1px solid #f4ead6;box-shadow:0 32px 120px #0009;position:relative;max-height:90svh;overflow:auto;}
+    .info-card img {width:100%;height:100%;min-height:400px;object-fit:cover;}
+    .info-content {padding:52px 38px;display:flex;flex-direction:column;justify-content:center;}
+    .info-content .num {font-size:10px;letter-spacing:.24em;color:#89744b;font-weight:700;}
+    .info-content h2 {font:normal 46px/.98 Georgia,serif;margin:20px 0 13px;letter-spacing:-.05em;}
+    .info-content .meta {font-size:10px;letter-spacing:.1em;color:#867962;text-transform:uppercase;}
+    .info-content p {line-height:1.85;font-size:13px;color:#555a51;margin-top:26px;}
+    .close {position:absolute;top:10px;right:12px;background:transparent;border:0;font-size:30px;color:#262a25;cursor:pointer;width:40px;height:40px;z-index:1;}
+    .toast {position:fixed;left:50%;bottom:30px;transform:translate(-50%,20px);color:#292724;background:#f3e8d2;padding:12px 22px;font-size:12px;z-index:18;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;box-shadow:0 8px 30px #0004;}
+    .toast.show{opacity:1;transform:translate(-50%,0);}
+    .ambient-glow{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 57%,#f6e9b90a,transparent 60%);mix-blend-mode:screen;}
+    @media(max-width:800px){
+      .viewport {min-height:400px;perspective:720px;}
+      .ui{padding:24px 21px 26px;}
+      .brand{font-size:23px;}.brand em{font-size:7px;}
+      .nav-right{gap:0}.nav-right .quiet{display:none}.nav-right button{font-size:10px;padding:10px 12px}
+      .intro-badge{display:none}.work-hint{display:none}
+      .title-area h1{font-size:clamp(48px,14vw,75px)}.title-area p{max-width:260px;font-size:12px;}
+      .ui-bottom{gap:8px;margin-top:35px}.scroll-hint{font-size:9px;letter-spacing:.12em}.scroll-mouse{width:20px;height:33px}.progress-box{min-width:85px;gap:7px;}.chapter{display:none}
+      .info-card{grid-template-columns:1fr;max-width:430px}.info-card img{height:250px;min-height:0}.info-content{padding:25px}.info-content h2{font-size:36px;}
+    }
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+
+    .scene-dim{background:linear-gradient(90deg,rgba(8,18,16,.85),rgba(8,18,16,.22) 55%,rgba(8,18,16,.12)),linear-gradient(180deg,#101b18b8,transparent 35%,transparent 65%,#101b18a8)}
+    .ui{padding:32px 4vw}.nav{padding-bottom:25px;border-bottom:1px solid #f4ead62b}.brand{font-size:28px;letter-spacing:.17em}.brand em{font-size:8px;letter-spacing:.25em}
+    .nav-right{gap:10px}.nav-right button{border-radius:0;background:transparent;border:0;padding:12px 16px;font-size:10px}.nav-right button:last-child{border:1px solid #e5d3b74d}.nav-right button span{color:#d6ba86;margin-left:8px}
+    .intro-badge{top:49px;font-size:9px;letter-spacing:.2em}.title-area{max-width:640px}.title-area h1{font-size:clamp(64px,8.8vw,128px);line-height:.9;font-weight:400;letter-spacing:-.055em}.title-area p{font-size:13px;line-height:1.9;max-width:340px;color:#eee9dfd9}.overline{margin-bottom:26px;font-size:9px;letter-spacing:.2em}
+    .enter{pointer-events:auto;display:flex;gap:45px;align-items:center;background:#ede6d7;color:#24302a;border:1px solid #ede6d7;padding:17px 20px;font-size:10px;letter-spacing:.15em;margin-top:26px;cursor:pointer;transition:background .2s}.enter:hover{background:#d6ba86}.enter span{font-size:18px}.title-area .micro{font-size:8px;letter-spacing:.12em;margin-top:16px;color:#d0c8b9}.ui-bottom{border-top:1px solid #f4ead62b;padding-top:23px;margin-top:32px}.scroll-hint{font-size:9px}.scroll-mouse{width:19px;height:30px}.work-hint{font-size:8px;right:4vw}.floor-rug{opacity:.22}.artwork .frame{padding:8px;background:linear-gradient(135deg,#b9a583,#282822 22%,#857557 80%,#22251f)}
+    button:focus-visible,[role=button]:focus-visible,a:focus-visible{outline:2px solid #d6ba86;outline-offset:5px}.sheet{position:fixed;inset:0;z-index:15;background:#eeeae1;color:#24302a;overflow:auto;padding:35px 5vw 60px;display:none}.sheet.open{display:block}.sheet-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #293a2b33;padding-bottom:25px}.sheet-head span{font-size:10px;letter-spacing:.2em}.sheet h2{font:normal clamp(40px,6vw,78px)/1 Georgia,serif;letter-spacing:-.04em;margin:45px 0 15px}.sheet-intro{max-width:560px;font-size:14px;line-height:1.8;color:#657065}.sheet-close{border:1px solid #293a2b44;background:none;padding:10px 18px;cursor:pointer}.collection-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:35px 25px;margin-top:45px}.work-card{background:none;border:0;padding:0;text-align:left;color:inherit;cursor:pointer}.work-card img{width:100%;aspect-ratio:1.2;object-fit:cover;display:block;transition:filter .2s}.work-card:hover img{filter:brightness(1.1)}.work-card small{display:block;font-size:9px;letter-spacing:.13em;margin-top:15px;color:#6a7268}.work-card h3{font:normal 25px Georgia,serif;margin:8px 0}.about-copy{max-width:680px;font:normal 25px/1.6 Georgia,serif;margin-top:45px}.about-detail{display:grid;grid-template-columns:1fr 1fr;gap:40px;border-top:1px solid #293a2b33;margin-top:45px;padding-top:30px;font-size:13px;line-height:1.8}.about-detail h3{font-size:10px;letter-spacing:.15em}.modal-nav{display:flex;gap:12px;margin-top:20px}.modal-nav button{border:1px solid #78827455;background:none;padding:10px 15px;color:#24302a;cursor:pointer;font-size:11px}
+    @media(max-width:800px){.ui{padding:22px}.nav{padding-bottom:20px}.brand{font-size:22px}.nav-right{gap:0}.nav-right button{font-size:8px;padding:10px}.title-area h1{font-size:clamp(64px,15vw,100px)}.title-area .micro{font-size:7px}.enter{padding:13px 16px;margin-top:19px}.collection-grid{grid-template-columns:repeat(2,1fr);gap:25px 15px}.work-card h3{font-size:20px}.about-detail{grid-template-columns:1fr}.sheet{padding:25px}.ui-bottom{margin-top:22px}.title-area p{font-size:12px}.overline{font-size:8px}}
+    @media(max-height:680px) and (min-width:801px){.title-area h1{font-size:78px}.enter{margin-top:15px;padding:10px 16px}.title-area p{margin-top:14px}.ui-bottom{margin-top:20px}}
+    .brand{font-size:25px;letter-spacing:.11em}.brand em{font-family:Georgia,serif;font-size:14px;letter-spacing:.38em;margin-top:8px;font-weight:400;color:#d6ba86}.intro-badge{left:54%}@media(max-width:800px){.brand{font-size:18px;letter-spacing:.08em}.brand em{font-size:10px;margin-top:7px}.nav-right button{font-size:7px;padding:9px 7px}}
+    .artwork:not(.feature){width:540px;height:390px;left:-270px;top:-195px}.artwork .plaque{top:calc(100% + 20px);font-size:15px}.artwork .plaque span{font-size:12px}
+    .endwall{background:radial-gradient(ellipse at 50% 45%,#aaa9a3,#71716e 72%,#555654)}.artwork.feature .mat{background:#d3d1ca}.artwork.feature .frame{background:linear-gradient(135deg,#737371,#262728 30%,#83847f 70%,#373839)}.artwork:not(.feature) .frame{padding:13px;background:linear-gradient(140deg,#312921,#ae9872 14%,#514636 28%,#aa936a 64%,#302920)}
+  </style>
+</head>
+<body>
+  <div class="scroll-runway" id="runway">
+    <main class="viewport" id="viewport" aria-label="Διαδραστική τρισδιάστατη γκαλερί τέχνης">
+      <div class="world" id="world" aria-hidden="false">
+        <div class="wall left surface"></div><div class="wall right surface"></div>
+        <div class="floor surface"></div><div class="floor-rug"></div><div class="ceiling surface"></div>
+        <div class="baseboard left"></div><div class="baseboard right"></div>
+        <div class="trim left"></div><div class="trim right"></div>
+        <div class="endwall surface"></div><div class="end-halo"></div><div class="end-label">THE FINAL ROOM · 09</div>
+        <div class="light-track side-a"></div><div class="light-track side-b"></div>
+        
+      </div>
+      <div class="ambient-glow"></div><div class="scene-dim"></div><div class="veil" id="veil"></div>
+      <div class="ui">
+        <header class="nav"><div class="brand" aria-label="Tampakakis Atelier">TAMPAKAKIS<em>ATELIER</em></div><div class="nav-right"><button id="collectionBtn" type="button">THE COLLECTION <span>09</span></button><button id="aboutBtn" type="button">ABOUT ↗</button></div></header>
+        <div class="intro-badge">VOLUME I / LIGHT & FORM</div>
+        <div class="work-hint" id="workHint">CLICK AN ARTWORK TO EXPLORE</div>
+        <div class="overline" id="overline">A DIGITAL EXHIBITION · 2025—2026</div>
+        <section class="title-area" id="titleArea"><h1>Art is a<br><em>journey.</em></h1><p>Εννέα έργα. Μια διαδρομή μέσα στο φως, το χρώμα και τη φόρμα. Ανακάλυψε την έκθεση, με τον δικό σου ρυθμό.</p><button class="enter" id="enterBtn">ENTER THE EXHIBITION <span>↗</span></button><p class="micro">SCROLL TO EXPLORE · SELECT A WORK TO DISCOVER MORE</p></section>
+        <div class="ui-bottom">
+          <div class="scroll-hint"><span class="scroll-mouse"></span><span>SCROLL TO WALK <span aria-hidden="true">↓</span></span></div>
+          <div class="progress-box"><strong id="progressText">01 / 09</strong><div class="progress-line" id="progressLine" style="--progress:0"></div></div>
+          <div class="chapter"><span id="chapterName">THE ENTRANCE</span><span>EXHIBITION 001</span></div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="info-panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+    <article class="info-card"><button class="close" id="closeBtn" aria-label="Κλείσιμο">×</button><img id="infoImg" alt=""><div class="info-content"><div class="num" id="infoNum">PIECE NO. 01</div><h2 id="infoTitle"></h2><div class="meta" id="infoMeta"></div><p id="infoDesc"></p></div></article>
+  </div>
+  <section class="sheet" id="collection" role="dialog" aria-modal="true" aria-labelledby="collectionTitle"><div class="sheet-head"><span>TAMPAKAKIS ATELIER / VOLUME I</span><button class="sheet-close" data-close>CLOSE ×</button></div><h2 id="collectionTitle">Light, form & everything<br><em>in between.</em></h2><p class="sheet-intro">Η συλλογή — εννέα μελέτες στο χρώμα, την ισορροπία και το φως. Επίλεξε ένα έργο για να το γνωρίσεις από κοντά.</p><div class="collection-grid" id="collectionGrid"></div></section>
+  <section class="sheet" id="about" role="dialog" aria-modal="true" aria-labelledby="aboutTitle"><div class="sheet-head"><span>TAMPAKAKIS ATELIER / THE SPACE</span><button class="sheet-close" data-close>CLOSE ×</button></div><h2 id="aboutTitle">A space to<br><em>look a little longer.</em></h2><p class="about-copy">Το Tampakakis Atelier είναι μια ψηφιακή έκθεση που μετατρέπει την περιήγηση σε εμπειρία. Εννέα εικονογραφικές συνθέσεις συναντιούνται σε έναν χώρο σχεδιασμένο γύρω από την τέχνη.</p><div class="about-detail"><div><h3>THE EXHIBITION</h3>Volume I — Light & Form<br>9 works · 2025–2026<br>Ψηφιακό εκθεσιακό concept.</div><div><h3>HOW TO EXPLORE</h3>Κάνε scroll ή χρησιμοποίησε τα βέλη ↑ ↓ για να κινηθείς στον χώρο. Πάτησε ένα έργο για λεπτομέρειες ή άνοιξε τη συλλογή για άμεση πρόσβαση. Πάτησε Escape για επιστροφή.</div></div></section>
+  <div class="toast" id="toast"></div>
+<script src="gallery.js"></script>
+<script>
+(function () {
+  'use strict';
+  const world=document.getElementById('world'), runway=document.getElementById('runway'),
+        title=document.getElementById('titleArea'), overline=document.getElementById('overline'),
+        hint=document.getElementById('workHint'), progress=document.getElementById('progressLine'),
+        progressText=document.getElementById('progressText'), chapter=document.getElementById('chapterName'),
+        panel=document.getElementById('panel');
+  const arts = window.galleryWorks;
+  const container=world;
+  arts.forEach((work,i)=>{
+    if(i===6||i===7)return; // Retain these two works in the collection view.
+    const el=document.createElement('div');el.className='artwork'+(work.side==='end'?' feature':'');
+    el.setAttribute('role','button');el.setAttribute('tabindex','0');el.setAttribute('aria-label',`Προβολή έργου: ${work.title}`);
+    el.innerHTML=`<div class="frame"><div class="mat"><img src="${work.src}" alt="${work.title}" draggable="false"></div></div><div class="plaque">${work.title}<span>— ${work.year}</span></div>`;
+    const wallDepth=[-850,-2525,-4200][Math.floor(i/2)];
+    if(work.side==='end') el.style.transform=`translate3d(0px,-3px,${work.z}px)`;
+    else el.style.transform=`translate3d(${work.side==='left'?-600:600}px,-25px,${wallDepth}px) rotateY(${work.side==='left'?90:-90}deg)`;
+    el.addEventListener('click',()=>openWork(i));
+    el.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();openWork(i);}});
+    container.appendChild(el);
+  });
+  let lastY=-1, mouseX=0, mouseY=0, viewX=0, viewY=0, current=0, target=0, frame=0, modalOpen=false;
+  const clamp=(x,min,max)=>Math.max(min,Math.min(max,x));
+  const isMobile=()=>innerWidth<800;
+  function updateTarget(){
+    const range=runway.offsetHeight-innerHeight;
+    target=clamp((scrollY-runway.offsetTop)/Math.max(1,range),0,1);
+  }
+  window.addEventListener('scroll',updateTarget,{passive:true});
+  window.addEventListener('resize',updateTarget,{passive:true});
+  window.addEventListener('pointermove',e=>{
+    if(e.pointerType==='mouse'){
+      if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+      mouseX=(e.clientX/innerWidth-.5)*2;
+      mouseY=(e.clientY/innerHeight-.5)*2;
+    }
+  },{passive:true});
+  document.addEventListener('pointerleave',()=>{mouseX=0;mouseY=0;});
+  window.addEventListener('blur',()=>{mouseX=0;mouseY=0;});
+  const viewport=document.getElementById('viewport');
+  function render(){
+    current+=(target-current)*(matchMedia('(prefers-reduced-motion:reduce)').matches?1:.095);
+    if(Math.abs(target-current)<.00004) current=target;
+    viewX+=(mouseX-viewX)*.075;
+    viewY+=(mouseY-viewY)*.075;
+    const walk=current*4950;
+    const scale=isMobile()? .8:1;
+    const shift=isMobile()?-125:0;
+    world.style.transform=`translateZ(${isMobile()?720:930}px) rotateY(${viewX*11}deg) rotateX(${-viewY*2}deg) translateZ(${isMobile()?-720:-930}px) translate3d(0px,${shift}px,${walk}px) scale(${scale})`;
+    const fade=0;
+    document.getElementById('veil').style.setProperty('--fade',fade.toFixed(3));
+    let intro=1-clamp((current-.015)*4.4,0,1);
+    title.style.opacity=intro;
+    title.style.transform=`translateY(${(1-intro)*24}px)`;
+    overline.style.opacity=intro;
+    hint.style.opacity=clamp((current-.1)*4,0,.72).toFixed(2);
+    progress.style.setProperty('--progress',current.toFixed(4));
+    let reached=clamp(Math.floor(current*8)+1,1,9);
+    progressText.textContent=String(reached).padStart(2,'0')+' / 09';
+    chapter.textContent=current>.78?'THE FINAL PIECE':current>.15?'THE COLLECTION':'THE ENTRANCE';
+    frame=requestAnimationFrame(render);
+  }
+  function openWork(i){
+    const w=arts[i];
+    document.getElementById('infoImg').src=w.src;
+    document.getElementById('infoImg').alt=w.title;
+    document.getElementById('infoNum').textContent='PIECE NO. '+String(i+1).padStart(2,'0');
+    document.getElementById('infoTitle').textContent=w.title;
+    document.getElementById('infoMeta').textContent=w.medium+'  |  '+w.year;
+    document.getElementById('infoDesc').textContent=w.desc;
+    panel.classList.add('open');modalOpen=true;document.getElementById('closeBtn').focus();
+  }
+  function closeWork(){panel.classList.remove('open');modalOpen=false;}
+  
+  panel.addEventListener('click',ev=>{if(ev.target===panel)closeWork();});
+  document.addEventListener('keydown',ev=>{
+    if(ev.key==='Escape'&&modalOpen){ev.stopImmediatePropagation();closeWork();}
+    if(!modalOpen&&!document.querySelector('.sheet.open')&&(ev.key==='ArrowDown'||ev.key==='ArrowUp')){
+      ev.preventDefault();window.scrollBy({top:ev.key==='ArrowDown'?innerHeight*.5:-innerHeight*.5,behavior:'smooth'});
+    }
+  });
+
+  let selected=0, returnFocus=null, sheetFocus=null;
+  const oldOpen=openWork;
+  openWork=function(i){selected=i;returnFocus=document.activeElement;oldOpen(i);document.body.style.overflow='hidden';};
+  const oldClose=closeWork;
+  closeWork=function(){oldClose();if(!document.querySelector('.sheet.open'))document.body.style.overflow='';returnFocus?.focus();};
+  const nav=document.createElement('div');nav.className='modal-nav';nav.innerHTML='<button id="prevWork" aria-label="Previous artwork">← PREVIOUS</button><button id="nextWork" aria-label="Next artwork">NEXT →</button>';document.querySelector('.info-content').appendChild(nav);
+  document.getElementById('prevWork').onclick=()=>{const f=returnFocus;openWork((selected+8)%9);returnFocus=f;};
+  document.getElementById('nextWork').onclick=()=>{const f=returnFocus;openWork((selected+1)%9);returnFocus=f;};
+  document.getElementById('closeBtn').onclick=closeWork;
+  arts.forEach((w,i)=>{const b=document.createElement('button');b.className='work-card';b.innerHTML=`<img src="${w.src}" alt="${w.title}" loading="lazy"><small>${String(i+1).padStart(2,'0')} / ${w.year}</small><h3>${w.title}</h3>`;b.onclick=()=>openWork(i);document.getElementById('collectionGrid').appendChild(b);});
+  function openSheet(id){sheetFocus=document.activeElement;document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';document.querySelector('#'+id+' button').focus();}
+  function closeSheet(){document.querySelectorAll('.sheet').forEach(e=>e.classList.remove('open'));document.body.style.overflow='';sheetFocus?.focus();}
+  document.getElementById('collectionBtn').onclick=()=>openSheet('collection');
+  document.getElementById('aboutBtn').onclick=()=>openSheet('about');
+  document.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeSheet);
+  document.getElementById('enterBtn').onclick=()=>window.scrollTo({top:(runway.offsetHeight-innerHeight)*.19,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
+  document.addEventListener('keydown',e=>{
+    const active=panel.classList.contains('open')?panel:document.querySelector('.sheet.open');
+    if(e.key==='Escape'&&!panel.classList.contains('open'))closeSheet();
+    if(e.key==='Tab'&&active){const items=[...active.querySelectorAll('button')];const first=items[0],last=items[items.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+  });
+  updateTarget();render();
+})();
+</script>
+</body>
+</html>
