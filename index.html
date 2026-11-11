@@ -2,7 +2,7 @@
 <html lang="el">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#151918">
   <meta name="description" content="Explore Tampakakis Atelier: nine works on light, form and the spaces between. An immersive digital exhibition.">
   <title>Tampakakis Atelier — A Gallery in Motion</title>
@@ -127,6 +127,40 @@
     .brand{font-size:25px;letter-spacing:.11em}.brand em{font-family:Georgia,serif;font-size:14px;letter-spacing:.38em;margin-top:8px;font-weight:400;color:#d6ba86}.intro-badge{left:54%}@media(max-width:800px){.brand{font-size:18px;letter-spacing:.08em}.brand em{font-size:10px;margin-top:7px}.nav-right button{font-size:7px;padding:9px 7px}}
     .artwork:not(.feature){width:540px;height:390px;left:-270px;top:-195px}.artwork .plaque{top:calc(100% + 20px);font-size:15px}.artwork .plaque span{font-size:12px}
     .endwall{background:radial-gradient(ellipse at 50% 45%,#aaa9a3,#71716e 72%,#555654)}.artwork.feature .mat{background:#d3d1ca}.artwork.feature .frame{background:linear-gradient(135deg,#737371,#262728 30%,#83847f 70%,#373839)}.artwork:not(.feature) .frame{padding:13px;background:linear-gradient(140deg,#312921,#ae9872 14%,#514636 28%,#aa936a 64%,#302920)}
+
+    .viewport {height:100vh;height:100svh;min-height:0}
+    .ui {padding-top:max(var(--edge-y,32px),env(safe-area-inset-top));padding-bottom:max(var(--edge-y,32px),env(safe-area-inset-bottom));padding-left:max(var(--edge-x,4vw),env(safe-area-inset-left));padding-right:max(var(--edge-x,4vw),env(safe-area-inset-right))}
+    .info-card {max-height:90vh;max-height:90svh}
+    .nav-right button,.enter,.close,.sheet-close,.modal-nav button {min-height:44px}
+    .close {width:44px;background:#eeeae1}
+    .look-controls {display:none}
+    .sheet,.info-card {overscroll-behavior:contain}
+    @media(max-width:1000px){.intro-badge{display:none}}
+    @media(max-width:800px){
+      .ui {--edge-x:clamp(12px,4vw,24px);--edge-y:clamp(12px,3vh,24px)}
+      .nav {gap:6px}.nav-right button {font-size:10px;padding:6px 9px;letter-spacing:.06em}
+      .title-area p {max-width:34ch}.title-area .micro {display:none}
+      .info-panel {padding:12px}.info-card {width:100%}.info-card img {height:clamp(140px,32vh,290px);object-fit:contain;background:#d5d0c5}
+    }
+    @media(max-width:380px){.nav-right button span{display:none}.brand{font-size:16px}.nav-right button{padding:5px}.info-content{padding:18px}}
+    @media(pointer:coarse){
+      .work-hint,.scroll-mouse {display:none}
+      .look-controls {display:flex;pointer-events:auto;gap:4px}
+      .look-controls button {width:44px;height:44px;font:20px Georgia,serif;color:#fff;background:#1d2926d9;border:1px solid #d7cbb599;cursor:pointer}
+      .ui-bottom {align-items:center}.progress-box {min-width:60px}
+    }
+    @media(max-height:600px){
+      .ui {--edge-y:8px}.nav {padding-bottom:4px}.ui-bottom {margin-top:8px;padding-top:4px}.overline {margin-bottom:6px}
+      .title-area h1 {font-size:clamp(34px,9vh,54px)}.title-area p {margin-top:6px;line-height:1.4}
+      .title-area .micro,.intro-badge {display:none}.enter {margin-top:7px;padding:6px 14px}
+      .info-panel {padding:8px}.info-card img {min-height:0}
+    }
+    @media(orientation:landscape) and (max-height:520px){
+      .title-area h1 br {display:none}.title-area h1 em {margin-left:.15em}.title-area p,.overline {display:none}.title-area {margin-top:auto}
+      .info-card {max-width:760px;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)}.info-card img {height:100%;max-height:85vh;object-fit:contain}
+      .info-content {padding:20px}.info-content h2 {font-size:30px;margin:8px 0}.info-content p {margin:8px 0}
+    }
+    .sheet {padding-left:max(5vw,env(safe-area-inset-left));padding-right:max(5vw,env(safe-area-inset-right));padding-top:max(25px,env(safe-area-inset-top));padding-bottom:max(40px,env(safe-area-inset-bottom))}
   </style>
 </head>
 <body>
@@ -150,6 +184,7 @@
         <section class="title-area" id="titleArea"><h1>Art is a<br><em>journey.</em></h1><p>Εννέα έργα. Μια διαδρομή μέσα στο φως, το χρώμα και τη φόρμα. Ανακάλυψε την έκθεση, με τον δικό σου ρυθμό.</p><button class="enter" id="enterBtn">ENTER THE EXHIBITION <span>↗</span></button><p class="micro">SCROLL TO EXPLORE · SELECT A WORK TO DISCOVER MORE</p></section>
         <div class="ui-bottom">
           <div class="scroll-hint"><span class="scroll-mouse"></span><span>SCROLL TO WALK <span aria-hidden="true">↓</span></span></div>
+          <div class="look-controls" role="group" aria-label="Camera direction"><button type="button" id="lookLeft" aria-label="Look left">←</button><button type="button" id="lookRight" aria-label="Look right">→</button></div>
           <div class="progress-box"><strong id="progressText">01 / 09</strong><div class="progress-line" id="progressLine" style="--progress:0"></div></div>
           <div class="chapter"><span id="chapterName">THE ENTRANCE</span><span>EXHIBITION 001</span></div>
         </div>
@@ -187,7 +222,7 @@
   });
   let mouseX=0, mouseY=0, viewX=0, viewY=0, current=0, target=0, modalOpen=false;
   let frame=0, previousTime=null, displayedScroll=-1;
-  let scrollRange=1, runwayTop=0;
+  let scrollRange=1, runwayTop=0, roomScale=1;
   const reducedMotion=matchMedia('(prefers-reduced-motion:reduce)');
   const mobile=matchMedia('(max-width:800px)');
   const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
@@ -200,6 +235,7 @@
     scheduleFrame();
   }
   function measure(){
+    roomScale=Math.min(1, innerWidth/1120, innerHeight/670);
     runwayTop=runway.offsetTop;
     scrollRange=Math.max(1,runway.offsetHeight-innerHeight);
     updateTarget();
@@ -218,7 +254,15 @@
     mouseY=event.clientY/innerHeight*2-1;
     scheduleFrame();
   },{passive:true});
-  document.addEventListener('pointerleave',resetPointer);
+  for(const [id,direction] of [['lookLeft',-1],['lookRight',1]]){
+    document.getElementById(id).addEventListener('click',()=>{
+      mouseX=clamp(mouseX+direction,-1,1);
+      scheduleFrame();
+    });
+  }
+  document.addEventListener('pointerleave',event=>{
+    if(event.pointerType==='mouse') resetPointer();
+  });
   window.addEventListener('blur',resetPointer);
   reducedMotion.addEventListener('change',resetPointer);
   document.addEventListener('visibilitychange',()=>{
@@ -241,11 +285,12 @@
     viewX=approach(viewX,mouseX,lookStep,.0001);
     viewY=approach(viewY,mouseY,lookStep,.0001);
     const perspective=mobile.matches ? 720 : 930;
-    world.style.transform=`translateZ(${perspective}px) rotateY(${viewX*11}deg) rotateX(${-viewY*2}deg) translateZ(${-perspective}px) translate3d(0px,${mobile.matches?-125:0}px,${current*4950}px) scale(${mobile.matches ? .8 : 1})`;
+    world.style.transform=`translateZ(${perspective}px) rotateY(${viewX*11}deg) rotateX(${-viewY*2}deg) translateZ(${-perspective}px) translate3d(0px,0px,${current*4950}px) scale(${roomScale})`;
 
     if(current!==displayedScroll){
       displayedScroll=current;
       const intro=1-clamp((current-.015)*4.4,0,1);
+      title.style.visibility=intro===0?'hidden':'visible';
       title.style.opacity=intro;
       title.style.transform=`translateY(${(1-intro)*24}px)`;
       overline.style.opacity=intro;
